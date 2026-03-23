@@ -1,0 +1,10 @@
+apiVersion: v2
+name: mlflow
+description: A Helm chart for deploying MLflow with MinIO
+version: 0.1.0
+appVersion: "3.10.0"
+
+dependencies:
+  - name: minio
+    version: "17.0.21"
+    repository: "file://charts/minio"

@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "experimentai"
+version = "0.1.0"
+description = "ExperimentAI API framework for AI Experimentation Platform"
+authors = ["Andre Gomes <andre-d-gomes@telecom.pt>"]
+readme = "README.md"
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+fastapi = "^0.111.0"
+uvicorn = "^0.30.0"
+pydantic = "^2.8.0"
+pydantic-settings = "^2.3.0"
+
+sqlalchemy = "^2.0.30"
+asyncpg = "^0.29.0"
+
+python-dotenv = "^1.0.1"
+httpx = "^0.27.0"
+mlflow = "^3.10.0"
+
+# opcional mas útil
+loguru = "^0.7.2"
+psycopg2-binary = "^2.9.11"
+python-jose = {extras = ["cryptography"], version = "^3.5.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+bcrypt = "4.0.1"
+croniter = "^6.0.0"
+boto3 = "^1.42.54"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+pytest-asyncio = "^0.23.6"
+ruff = "^0.4.5"
+black = "^24.4.2"
+alembic = "^1.17.2"
+mako = "^1.3.10"
+passlib = "^1.7.4"
+bcrypt = "4.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

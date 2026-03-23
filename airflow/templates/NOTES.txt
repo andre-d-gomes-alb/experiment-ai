@@ -1,0 +1,42 @@
+1. Access the Airflow Web UI:
+
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+
+{{- else if eq .Values.airflowWeb.service.type "NodePort" }}
+  NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" service {{ .Values.airflowWeb.fullnameOverride }}-service)
+  NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "Airflow Web UI is available at: http://$NODE_IP:$NODE_PORT"
+
+{{- else if eq .Values.airflowWeb.service.type "LoadBalancer" }}
+  echo "Waiting for LoadBalancer IP for Airflow Web Service..."
+  kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.airflowWeb.fullnameOverride }}-service --watch
+  LB_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.airflowWeb.fullnameOverride }}-service -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo "Airflow Web UI is available at: http://$LB_IP:{{ .Values.airflowWeb.service.port }}"
+
+{{- else }}
+  echo "Airflow Web Service type {{ .Values.airflowWeb.service.type }} not specifically handled."
+{{- end }}
+
+---
+
+2. Access Redis Service:
+
+{{- if eq .Values.redis.master.service.type "NodePort" }}
+  REDIS_NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" service {{ .Values.redis.serviceName }})
+  REDIS_NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "Redis is available at: http://$REDIS_NODE_IP:$REDIS_NODE_PORT"
+
+{{- else if eq .Values.redis.master.service.type "LoadBalancer" }}
+  echo "Waiting for LoadBalancer IP for Redis Service..."
+  kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.redis.serviceName }} --watch
+  REDIS_LB_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.redis.serviceName }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo "Redis is available at: http://$REDIS_LB_IP:6379"
+
+{{- else }}
+  echo "Redis Service type {{ .Values.redis.master.service.type }} not specifically handled."
+{{- end }}

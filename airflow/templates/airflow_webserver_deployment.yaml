@@ -1,0 +1,139 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.airflowWeb.fullnameOverride }}
+  labels:
+    app: {{ .Values.airflowWeb.fullnameOverride }}
+spec:
+  replicas: {{ .Values.airflowWeb.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.airflowWeb.fullnameOverride }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.airflowWeb.fullnameOverride }}
+    spec:
+      initContainers:
+        - name: set-volume-permissions
+          image: busybox
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              chown -R 50000:0 /mnt/data/airflow && chmod -R 775 /mnt/data/airflow
+          volumeMounts:
+            - name: airflow-logs
+              mountPath: /mnt/data/airflow
+      containers:
+        - name: airflow-web
+          image: "{{ .Values.airflow.image.repository }}:{{ .Values.airflow.image.tag }}"
+          imagePullPolicy: {{ .Values.airflow.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.airflowWeb.service.port }}
+          env:
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: CeleryExecutor
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.postgresUserKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.postgresPasswordKey }}
+            - name: AIRFLOW_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.airflowDbKey }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.redisPasswordKey }}
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@{{ .Values.postgres.serviceName }}:5432/$(AIRFLOW_DB)"
+            - name: AIRFLOW__CELERY__BROKER_URL
+              value: redis://:${REDIS_PASSWORD}@{{ .Values.redis.serviceName }}:6379/0
+            - name: AIRFLOW__CELERY__RESULT_BACKEND
+              value: "db+postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@{{ .Values.postgres.serviceName }}:5432/$(AIRFLOW_DB)"
+            - name: AIRFLOW__CORE__DEFAULT_TIMEZONE
+              value: {{ .Values.airflow.env.timezone }}
+            - name: AIRFLOW__CORE__TEST_CONNECTION
+              value: "Enabled"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.minioUserKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.minioPasswordKey }}
+            - name: MLFLOW_S3_ENDPOINT_URL
+              value: {{ .Values.airflow.env.mlflowS3EndpointUrl }}
+            - name: MLFLOW_TRACKING_URI
+              value: {{ .Values.airflow.env.mlflowTrackingUri }}
+            - name: MLFLOW_TRACKING_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.mlflowUserKey }}
+            - name: MLFLOW_TRACKING_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.mlflowPasswordKey }}
+            - name: AIRFLOW_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.airflowRootUserKey }}
+            - name: AIRFLOW_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.airflowRootPasswordKey }}
+            - name: AIRFLOW_ROOT_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.airflowRootEmailKey }}
+            - name: AIRFLOW__CORE__AUTH_MANAGER
+              value: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+            - name: AIRFLOW__WEBSERVER__AUTH_BACKENDS
+              value: airflow.contrib.auth.backends.password_auth
+            - name: AIRFLOW__CORE__FERNET_KEY
+              value: "g4xSer2zhY-KBzjXqmcwpQcTvsaPIjWrjUruep3zbVQ="
+            - name: AIRFLOW__API_AUTH__JWT_SECRET
+              value: "627e82586d887dea6a770dd329bdbed032546667cacdbd984b70a635b518d80c"
+          command:
+            - /scripts/entrypoint.sh
+          volumeMounts:
+            - name: airflow-logs
+              mountPath: /opt/airflow/logs
+            - name: airflow-dags
+              mountPath: /opt/airflow/dags
+            - name: airflow-plugins
+              mountPath: /opt/airflow/plugins
+            - name: entrypoint
+              mountPath: /scripts
+              readOnly: true
+      volumes:
+        - name: airflow-logs
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflow.persistence.logs.claimName }}
+        - name: airflow-dags
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflow.persistence.dags.claimName }}
+        - name: airflow-plugins
+          persistentVolumeClaim:
+            claimName: {{ .Values.airflow.persistence.plugins.claimName }}
+        - name: entrypoint
+          configMap:
+            name: {{ .Values.airflowWeb.fullnameOverride }}-entrypoint
+            defaultMode: 0755

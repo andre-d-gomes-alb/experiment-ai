@@ -1,0 +1,40 @@
+1. Get the application URL by running these commands:
+
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+
+{{- else if eq .Values.service.type "NodePort" }}
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+
+  # MLflow
+  export MLFLOW_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "mlflow.name" . }}-service -o jsonpath="{.spec.ports[0].nodePort}")
+  echo "Access MLflow at:       http://$NODE_IP:$MLFLOW_PORT"
+
+  # MinIO API
+  export MINIO_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "mlflow.name" . }}-minio -o jsonpath="{.spec.ports[0].nodePort}")
+  echo "Access MinIO API at:    http://$NODE_IP:$MINIO_PORT"
+
+  # MinIO Console
+  export MINIO_CONSOLE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "mlflow.name" . }}-minio-console -o jsonpath="{.spec.ports[0].nodePort}")
+  echo "Access MinIO Console at: http://$NODE_IP:$MINIO_CONSOLE_PORT"
+
+{{- else if eq .Values.service.type "LoadBalancer" }}
+  echo "NOTE: It may take a few minutes for the LoadBalancer IP to be available."
+  echo "Watch the status with: kubectl get svc --namespace {{ .Release.Namespace }} -w {{ include "mlflow.name" . }}-service"
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "mlflow.name" . }}-service -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+  echo "Access MLflow at: http://$SERVICE_IP:{{ .Values.service.port }}"
+
+{{- else if eq .Values.service.type "ClusterIP" }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ include "mlflow.name" . }} -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Run the following command to access MLflow via port-forward:"
+  echo "kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT"
+  echo "Then open your browser at http://127.0.0.1:8080"
+
+{{- else }}
+  echo "Service type {{ .Values.service.type }} is not recognized for automatic URL generation."
+{{- end }}

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.airflow.persistence.logs.claimName }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  selector:
+    matchLabels:
+      volume: airflow-logs
+  resources:
+    requests:
+      storage: {{ .Values.airflow.persistence.logs.size }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.airflow.persistence.dags.claimName }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  selector:
+    matchLabels:
+      volume: airflow-dags
+  resources:
+    requests:
+      storage: {{ .Values.airflow.persistence.dags.size }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.airflow.persistence.plugins.claimName }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  selector:
+    matchLabels:
+      volume: airflow-plugins
+  resources:
+    requests:
+      storage: {{ .Values.airflow.persistence.plugins.size }}

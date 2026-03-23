@@ -1,0 +1,19 @@
+services:
+  experimentai:
+    user: root
+    build: .
+    command: >
+      sh -c "
+      export PYTHONPATH=/app &&
+      alembic upgrade head &&
+      uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+      "
+    volumes:
+      - ./:/app:delegated
+      - /mnt/data/airflow/dags:/opt/airflow/dags
+    # - /mnt/data/experimentai_dev/logs:/logs
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    restart: unless-stopped

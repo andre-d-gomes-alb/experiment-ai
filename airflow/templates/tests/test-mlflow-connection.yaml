@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Values.fullnameOverride }}-test-mlflow-connection"
+  labels:
+    app.kubernetes.io/name: "{{ .Values.fullnameOverride }}"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:latest
+      command: ["sh", "-c"]
+      args:
+        - |
+          curl -s -o /dev/null -w "%{http_code}" $MLFLOW_TRACKING_URI/health | grep 200
+      env:
+        - name: MLFLOW_TRACKING_URI
+          value: "{{ .Values.airflow.env.mlflowTrackingUri }}"
+  restartPolicy: Never

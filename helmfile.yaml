@@ -1,0 +1,40 @@
+# helmfile.yaml
+
+hooks:
+  # Create Kubernetes Namespace
+  - events: ["prepare"]
+    showlogs: true
+    command: bash
+    args:
+      - -c
+      - |
+        kubectl get namespace experiment-ai >/dev/null 2>&1 \
+        || kubectl create namespace experiment-ai
+  
+  # Run Kubernetes Secrets
+  - events: ["prepare"]
+    showlogs: true
+    command: kubectl
+    args: ["apply", "-f", "./secrets.yaml", "-n", "experiment-ai"]
+
+# Run Helm Charts
+releases:
+  - name: timescaledb
+    namespace: experiment-ai
+    chart: ./timescaledb
+    wait: true
+
+  - name: mlflow
+    namespace: experiment-ai
+    chart: ./mlflow
+    wait: true
+
+  - name: airflow
+    namespace: experiment-ai
+    chart: ./airflow
+    wait: true
+  
+  - name: experimentai
+    namespace: experiment-ai
+    chart: ./experiment-ai/experimentai-chart
+    wait: true

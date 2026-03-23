@@ -1,0 +1,45 @@
+fullnameOverride: timescaledb
+
+replicaCount: 1
+
+image:
+  repository: andre8gomes/timescaledb
+  tag: "2.20.2-pg17"
+  pullPolicy: IfNotPresent
+
+secrets:
+  name: experimentai-secrets
+  userKey: POSTGRES_USER
+  passwordKey: POSTGRES_PASSWORD
+
+persistence:
+  hostPath: /mnt/data/postgres
+  size: 5Gi
+
+service:
+  type: NodePort
+  port: 5432
+  nodePort: 30000
+
+####################
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+serviceAccount:
+  create: false

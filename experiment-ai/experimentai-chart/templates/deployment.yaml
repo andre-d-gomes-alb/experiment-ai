@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "experimentai-chart.fullname" . }}
+  labels:
+    app: {{ include "experimentai-chart.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "experimentai-chart.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "experimentai-chart.name" . }}
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      initContainers:
+        - name: set-dag-permissions
+          image: busybox
+          command:
+            - sh
+            - -c
+            - "chown -R 1000:1000 /opt/airflow/dags && chmod -R 775 /opt/airflow/dags"
+          volumeMounts:
+            - name: airflow-dags
+              mountPath: /opt/airflow/dags
+        - name: init-logs-permissions
+          image: busybox
+          command:
+            - sh
+            - -c
+            - "chown -R 1000:1000 /logs && chmod -R 775 /logs"
+          volumeMounts:
+            - name: logs-volume
+              mountPath: /logs
+      containers:
+        - name: api-server
+          image: {{ .Values.image.repository }}:{{ .Chart.AppVersion }}
+          env:
+            # ExperimentAI Application Settings
+            - name: APP_VERSION
+              value: {{ .Chart.AppVersion }}
+            - name: LOG_FILE_ENABLED
+              value: "true"
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.jwtSecretKey }}
+            - name: ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.adminEmailKey }}
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.adminPasswordKey }}
+            - name: INTERNAL_HEALTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.internalHealthTokenKey }}
+            
+            # Database Settings
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.postgresUserKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.postgresPasswordKey }}
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.postgresExperimentaiDbKey }}
+            - name: POSTGRES_HOST
+              value: {{ .Values.env.postgresHost }}
+            - name: POSTGRES_PORT
+              value: "{{ .Values.env.postgresPort }}"
+            
+            # MLflow Settings
+            - name: MLFLOW_TRACKING_URI
+              value: {{ .Values.env.mlflowTrackingUri }}
+            - name: MLFLOW_TRACKING_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.mlflowUsernameKey }}
+            - name: MLFLOW_TRACKING_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.mlflowPasswordKey }}
+            - name: MLFLOW_S3_ENDPOINT_URL
+              value: {{ .Values.env.mlflowS3EndpointUrl }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.mlflowAwsAccessKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.mlflowAwsSecretKey }}
+            
+            # Airflow Settings
+            - name: AIRFLOW_API_BASE_URL
+              value: {{ .Values.env.airflowApiBaseURL }}
+            - name: AIRFLOW_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.airflowUsernameKey }}
+            - name: AIRFLOW_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.airflowPasswordKey }}
+            - name: AIRFLOW_DAGS_FOLDER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.airflowDagsFolderKey }}
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+          command:
+            - /scripts/entrypoint.sh
+          volumeMounts:
+            - name: logs-volume
+              mountPath: /logs
+            - name: airflow-dags
+              mountPath: /opt/airflow/dags
+            - name: entrypoint
+              mountPath: /scripts
+              readOnly: true
+      volumes:
+        - name: logs-volume
+          hostPath:
+            path: {{ .Values.volume.hostPath_logs }}
+            type: DirectoryOrCreate
+        - name: airflow-dags
+          hostPath:
+            path: {{ .Values.volume.hostPath_airflow_dags }}
+            type: DirectoryOrCreate
+        - name: entrypoint
+          configMap:
+            name: {{ include "experimentai-chart.fullname" . }}-entrypoint
+            defaultMode: 0755

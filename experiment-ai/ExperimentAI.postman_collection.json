@@ -1,0 +1,2890 @@
+{
+  "info": {
+    "_postman_id": "a14edfce-bc2a-48cf-888c-ef913f3ff936",
+    "name": "ExperimentAI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "15560908"
+  },
+  "item": [
+    {
+      "name": "AUTH",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"<email>\",\n    \"password\": \"<password>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/auth/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwOTEwMTg5fQ.uKhMTgeS9SsiwItZyGu9R6c-CrpcIZ8lh-OAdy09Tq4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/auth/me",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MzA0MjEyfQ.nI8-GlhjsmjPO80oWKf5acWlNQV-7hkvJfU5snu0uk4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"full_name\": \"<full_name>\",\n    \"company\": \"<company>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/auth/me",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MjM5OTk3fQ.17F43bMFP6_IdBqTLpsF9hiThYptXKUpQNttw6xoaiQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"old_password\": \"<old_pass>\",\n    \"new_password\": \"<new_pass>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/auth/change-password",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "MONITOR",
+      "item": [
+        {
+          "name": "Check Health",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY5MDk1OTkwfQ.uxd2wTkCHQV1-NCRc1K-9FmPBaaNHt_Fgw6fH2YhYms",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/monitor/health",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "monitor",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "USERS",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MjM5OTk3fQ.17F43bMFP6_IdBqTLpsF9hiThYptXKUpQNttw6xoaiQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"<email>\",\n    \"full_name\": \"<full_name>\",\n    \"company\": \"<company>\",\n    \"password\": \"<password>\",\n    \"role\": \"<role:admin|contributor|consumer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/users",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/users",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "<email>",
+                  "disabled": true
+                },
+                {
+                  "key": "full_name",
+                  "value": "<full_name>",
+                  "disabled": true
+                },
+                {
+                  "key": "company",
+                  "value": "<company>",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "<role:admin|consumer|contributor>",
+                  "disabled": true
+                },
+                {
+                  "key": "is_active",
+                  "value": "<is_active:true|false>",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/users/<user_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "<user_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MzA0MjEyfQ.nI8-GlhjsmjPO80oWKf5acWlNQV-7hkvJfU5snu0uk4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"full_name\": \"<full_name>\",\n    \"company\": \"<company>\",\n    \"role\": \"<role:admin|contributor|consumer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/users/<user_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "<user_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MjM5OTk3fQ.17F43bMFP6_IdBqTLpsF9hiThYptXKUpQNttw6xoaiQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/users/<user_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "<user_id>"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "EXPERIMENTS",
+      "item": [
+        {
+          "name": "Create Experiment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MzA0MjEyfQ.nI8-GlhjsmjPO80oWKf5acWlNQV-7hkvJfU5snu0uk4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"<id>\",\n    \"name\": \"<name>\",\n    \"description\": \"<description>\",\n    \"tags\": [\n        \"<tag_1>\",\n        \"<tag_2>\"\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Experiments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "<name>",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "<description>",
+                  "disabled": true
+                },
+                {
+                  "key": "tag",
+                  "value": "<tag>",
+                  "disabled": true
+                },
+                {
+                  "key": "owner_id",
+                  "value": "<owner_id>",
+                  "disabled": true
+                },
+                {
+                  "key": "user_role",
+                  "value": "<user_role:owner|editor|viewer>",
+                  "disabled": true
+                },
+                {
+                  "key": "include_archived",
+                  "value": "<include_archived: true|false>",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Experiment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MzA0MjEyfQ.nI8-GlhjsmjPO80oWKf5acWlNQV-7hkvJfU5snu0uk4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"<name>\",\n    \"description\": \"<description>\",\n    \"tags\": [\n        \"<tag_1>\",\n        \"<tag_2>\"\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Archive Experiment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MzA0MjEyfQ.nI8-GlhjsmjPO80oWKf5acWlNQV-7hkvJfU5snu0uk4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reactive Experiment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MzA0MjEyfQ.nI8-GlhjsmjPO80oWKf5acWlNQV-7hkvJfU5snu0uk4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/reactivate",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "reactivate"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Experiment Members",
+      "item": [
+        {
+          "name": "Create Experiment Member",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MzA0MjEyfQ.nI8-GlhjsmjPO80oWKf5acWlNQV-7hkvJfU5snu0uk4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"<email>\",\n    \"role\": \"<role:editor|viewer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/members",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "members"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Experiment Members",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/members",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "members"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "<email>",
+                  "disabled": true
+                },
+                {
+                  "key": "full_name",
+                  "value": "<full_name>",
+                  "disabled": true
+                },
+                {
+                  "key": "company",
+                  "value": "<company>",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "<role:editor|viewer>",
+                  "disabled": true
+                },
+                {
+                  "key": "include_inactive",
+                  "value": "<include_inactive:true|false>",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment Member",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/members/<user_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "members",
+                "<user_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Experiment Member",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MzA0MjEyfQ.nI8-GlhjsmjPO80oWKf5acWlNQV-7hkvJfU5snu0uk4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"role\": \"<role:editor|viewer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/members/<user_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "members",
+                "<user_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate Experiment Member",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4MzA0MjEyfQ.nI8-GlhjsmjPO80oWKf5acWlNQV-7hkvJfU5snu0uk4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/members/<user_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "members",
+                "<user_id>"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Experiment Variables",
+      "item": [
+        {
+          "name": "Create Experiment Variable",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4NDgzMTA0fQ.1GXo86WxCiOnGMn43HJxuCXNXNHErLEDw5R7wJbVs9Q",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"<id>\",\n    \"value\": \"<value>\",\n    \"description\": \"<description>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/variables",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "variables"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Experiment Variables",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/variables",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "variables"
+              ],
+              "query": [
+                {
+                  "key": "description",
+                  "value": "<description>",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment Variable",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/variables/<variable_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "variables",
+                "<variable_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Experiment Variable",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4NDgzMTA0fQ.1GXo86WxCiOnGMn43HJxuCXNXNHErLEDw5R7wJbVs9Q",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"value\": \"<value>\",\n    \"description\": \"<description>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/variables/<variable_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "variables",
+                "<variable_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Experiment Variable",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY4NDgzMTA0fQ.1GXo86WxCiOnGMn43HJxuCXNXNHErLEDw5R7wJbVs9Q",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/variables/<variable_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "variables",
+                "<variable_id>"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Experiment Connections",
+      "item": [
+        {
+          "name": "Create Experiment Connection",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY5MDI2NjYwfQ.uQJ_RqY5uCXv7x_Lqpo0inLXuSfQmxQsbQC5EtgkhBs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"<id>\",\n  \"conn_type\": \"<conn_type>\",\n  \"description\": \"<description>\",\n  \"host\": \"<host>\",\n  \"login\": \"<login>\",\n  \"schema_name\": \"<schema_name>\",\n  \"port\": 0,\n  \"password\": \"<password>\",\n  \"extra\": {\n    \"<param_name>\": \"<param_value>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/connections",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "connections"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Experiment Connections",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/connections",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "connections"
+              ],
+              "query": [
+                {
+                  "key": "description",
+                  "value": "<description>",
+                  "disabled": true
+                },
+                {
+                  "key": "conn_type",
+                  "value": "<conn_type>",
+                  "disabled": true
+                },
+                {
+                  "key": "host",
+                  "value": "<host>",
+                  "disabled": true
+                },
+                {
+                  "key": "schema_name",
+                  "value": "<schema_name>",
+                  "disabled": true
+                },
+                {
+                  "key": "port",
+                  "value": "<port>",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment Connection",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY5MDI2NjYwfQ.uQJ_RqY5uCXv7x_Lqpo0inLXuSfQmxQsbQC5EtgkhBs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/connections/<connection_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "connections",
+                "<connection_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Experiment Connection",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY5MDI2NjYwfQ.uQJ_RqY5uCXv7x_Lqpo0inLXuSfQmxQsbQC5EtgkhBs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"conn_type\": \"<conn_type>\",\n    \"description\": \"<description>\",\n    \"host\": \"<host>\",\n    \"login\": \"<login>\",\n    \"schema_name\": \"<schema_name>\",\n    \"port\": 0,\n    \"password\": \"<password>\",\n    \"extra\": {\n        \"<param_name>\": \"<param_value>\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/connections/<connection_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "connections",
+                "<connection_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Experiment Connection",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzY5MDI2NjYwfQ.uQJ_RqY5uCXv7x_Lqpo0inLXuSfQmxQsbQC5EtgkhBs",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/connections/<connection_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "connections",
+                "<connection_id>"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Experiment Pipelines",
+      "item": [
+        {
+          "name": "Create Experiment Pipeline",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"<id>\",\n    \"name\": \"<name>\",\n    \"description\": \"<description>\",\n    \"schedule\": {\n        \"value\": \"<value>\",\n        \"type\": \"<type:cron|preset|interval_seconds|assets>\"\n    },\n    \"start_date\": \"<start_date>\",\n    \"end_date\": \"<end_date>\",\n    \"catchup\": \"<catchup:true|false>\",\n    \"default_args\": {\n        \"retries\": 0,\n        \"retry_delay_seconds\": 0\n    },\n    \"max_active_runs\": 0,\n    \"dagrun_timeout_seconds\": 0,\n    \"tags\": [\n        \"<tag_1>\",\n        \"<tag_2>\"\n    ],\n    \"params\": {\n        \"<param>\": {\n            \"value\": \"<value>\",\n            \"type\": \"<type:string|number|integer|boolean|array|object>\",\n            \"description\": \"<description>\"\n        }\n    },\n    \"code_base64\": \"<code>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Experiment Pipelines",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "<name>",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "<description>",
+                  "disabled": true
+                },
+                {
+                  "key": "tag",
+                  "value": "<tag>",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "<status:creating|updating|paused|active|error>",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment Pipeline",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines/<pipeline_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines",
+                "<pipeline_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Experiment Pipeline",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"<name>\",\n    \"description\": \"<description>\",\n    \"schedule\": {\n        \"value\": \"<value>\",\n        \"type\": \"<type:cron|preset|interval_seconds|assets>\"\n    },\n    \"start_date\": \"<start_date>\",\n    \"end_date\": \"<end_date>\",\n    \"catchup\": \"<catchup:true|false>\",\n    \"default_args\": {\n        \"retries\": 0,\n        \"retry_delay_seconds\": 0\n    },\n    \"max_active_runs\": 0,\n    \"dagrun_timeout_seconds\": 0,\n    \"tags\": [\n        \"<tag_1>\",\n        \"<tag_2>\"\n    ],\n    \"params\": {\n        \"<param>\": {\n            \"value\": \"<value>\",\n            \"type\": \"<type:string|number|integer|boolean|array|object>\",\n            \"description\": \"<description>\"\n        }\n    },\n    \"code_base64\": \"<code>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines/<pipeline_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines",
+                "<pipeline_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Experiment Pipeline",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines/<pipeline_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines",
+                "<pipeline_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Activate Experiment Pipeline",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines/<pipeline_id>/activate",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines",
+                "<pipeline_id>",
+                "activate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Pause Experiment Pipeline",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines/<pipeline_id>/pause",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines",
+                "<pipeline_id>",
+                "pause"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Trigger Experiment Pipeline",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"<param_name>\": \"<param_value>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines/<pipeline_id>/trigger",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines",
+                "<pipeline_id>",
+                "trigger"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Experiment Pipeline Runs",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "max_runs_analysed",
+                "value": "<max_runs_analysed:50 default>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "run_type",
+                "value": "<run_type:backfill|scheduled|manual|asset_triggered>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "state",
+                "value": "<state:queued|running|success|failed>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "triggered_by",
+                "value": "<triggered_by:cli|operator|rest_api|ui|test|timetable|asset|backfill>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "sort",
+                "value": "<sort_field asc|desc>",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines/<pipeline_id>/runs",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines",
+                "<pipeline_id>",
+                "runs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment Pipeline Run",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "max_runs_analysed",
+                "value": "<max_runs_analysed:50 default>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "run_type",
+                "value": "<run_type:backfill|scheduled|manual|asset_triggered>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "state",
+                "value": "<state:queued|running|success|failed>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "triggered_by",
+                "value": "<triggered_by:cli|operator|rest_api|ui|test|timetable|asset|backfill>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "sort",
+                "value": "<sort_field asc|desc>",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines/<pipeline_id>/runs/<run_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines",
+                "<pipeline_id>",
+                "runs",
+                "<run_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Experiment Pipeline Run",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzcwODM2ODc0fQ.d866Tngs4GvXb7GjwwAjelfEDxrE6q4XDGMUBEsMCnk",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "max_runs_analysed",
+                "value": "<max_runs_analysed:50 default>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "run_type",
+                "value": "<run_type:backfill|scheduled|manual|asset_triggered>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "state",
+                "value": "<state:queued|running|success|failed>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "triggered_by",
+                "value": "<triggered_by:cli|operator|rest_api|ui|test|timetable|asset|backfill>",
+                "type": "text",
+                "disabled": true
+              },
+              {
+                "key": "sort",
+                "value": "<sort_field asc|desc>",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/pipelines/<pipeline_id>/runs/<run_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "pipelines",
+                "<pipeline_id>",
+                "runs",
+                "<run_id>"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Experiment Runs",
+      "item": [
+        {
+          "name": "List Experiment Runs",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/runs",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "runs"
+              ],
+              "query": [
+                {
+                  "key": "run_name",
+                  "value": "<run_name>",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "<status:running|scheduled|finished|failed|killed>",
+                  "disabled": true
+                },
+                {
+                  "key": "metrics",
+                  "value": "<metric:value, metric>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "has_models",
+                  "value": "<has_models:true|false>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "include_deleted",
+                  "value": "<include_deleted:true|false>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment Run",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/runs/<run_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "runs",
+                "<run_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Experiment Run",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/runs/<run_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "runs",
+                "<run_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download Experiment Run Artifacts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/runs/<run_id>/download-artifacts",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "runs",
+                "<run_id>",
+                "download-artifacts"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Experiment Logged Models",
+      "item": [
+        {
+          "name": "List Experiment Logged Models",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/logged-models",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "logged-models"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "<name>",
+                  "disabled": true
+                },
+                {
+                  "key": "run_id",
+                  "value": "<run_id>",
+                  "disabled": true
+                },
+                {
+                  "key": "tags",
+                  "value": "<tag:value, tag>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "params",
+                  "value": "<param:value, param>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "metrics",
+                  "value": "<metric:value, metric>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "has_registered",
+                  "value": "<has_registered:true|false>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "<status:unspecified|pending|ready|failed>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment Logged Model",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/logged-models/<model_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "logged-models",
+                "<model_id>"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "<name>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Experiment Logged Model",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"<status:unspecified|pending|ready|failed>\",\n    \"tags\": {\n        \"<tag_name>\": \"<tag_value>\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/logged-models/<model_id>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "logged-models",
+                "<model_id>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download Experiment Logged Model",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/logged-models/<model_id>/download",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "logged-models",
+                "<model_id>",
+                "download"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register Experiment Logged Model",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<name>\",\n  \"description\": \"<descriptio>\",\n  \"tags\": {\n    \"<tag_name>\": \"<tag_value>\"\n  },\n  \"aliases\": [\n    \"<alias:production|staging|dev|champion|challenger|ab_test|canary|backup|deprecated|latest\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/logged-models/<model_id>/register",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "logged-models",
+                "<model_id>",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Experiment Registered Models",
+      "item": [
+        {
+          "name": "List Experiment Registered Models",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models"
+              ],
+              "query": [
+                {
+                  "key": "tags",
+                  "value": "<tag:value, tag>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "aliases",
+                  "value": "<alias, alias>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment Registered Model",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models/<name>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models",
+                "<name>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Experiment Registered Model",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"<name>\",\n    \"description\": \"<description>\",\n    \"tags\": {\n        \"<tag_name>\": \"<tag_value>\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models/<name>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models",
+                "<name>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Experiment Registered Model",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models/<name>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models",
+                "<name>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Experiment Registered Model Versions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models/<name>/versions",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models",
+                "<name>",
+                "versions"
+              ],
+              "query": [
+                {
+                  "key": "run_id",
+                  "value": "<run_id>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "model_id",
+                  "value": "<model_id>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "tags",
+                  "value": "<tag:value, tag>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "params",
+                  "value": "<param:value, param>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "metrics",
+                  "value": "<metric:value, metric>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "aliases",
+                  "value": "<alias, alias>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "is_ready",
+                  "value": "<is_ready:true|false>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Experiment Registered Model Version",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models/<name>/versions/<version>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models",
+                "<name>",
+                "versions",
+                "<version>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Experiment Registered Model Version",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"description\": \"<description>\",\n    \"tags\": {\n        \"<tag_name>\": \"<tag_value>\"\n    },\n    \"aliases\": [\n        \"<alias:production|staging|dev|champion|challenger|ab_test|canary|backup|deprecated|latest\"\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models/<name>/versions/<version>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models",
+                "<name>",
+                "versions",
+                "<version>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Experiment Registered Model Version",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models/<name>/versions/<version>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models",
+                "<name>",
+                "versions",
+                "<version>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download Experiment Registered Model Version",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models/<name>/versions/<version>/download",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models",
+                "<name>",
+                "versions",
+                "<version>",
+                "download"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Promote Experiment Registered Model Version",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczMTU4OTU4fQ.NbK6DFnQ1jTPo48dP6boo850qJITciUq4bXgLufKzzU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"target_name\": \"<name>\",\n    \"aliases\": [\n        \"<alias:production|staging|dev|champion|challenger|ab_test|canary|backup|deprecated|latest\"\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/experiments/<experiment_id>/registered-models/<name>/versions/<version>/promote",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "experiments",
+                "<experiment_id>",
+                "registered-models",
+                "<name>",
+                "versions",
+                "<version>",
+                "promote"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "MODELS HUB",
+      "item": [
+        {
+          "name": "List Models",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczNjY4ODM3fQ.a2txNI1Nddqj--y8K4IuBXOBLBrjqRDNIno2flg_4Wc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/models",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "models"
+              ],
+              "query": [
+                {
+                  "key": "tags",
+                  "value": "<tag:value, tag>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "aliases",
+                  "value": "<alias, alias>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "experiment_name",
+                  "value": "<experiment_name>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "only_experiment_models",
+                  "value": "<only_experiment_models:true|false>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Model",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczNjY4ODM3fQ.a2txNI1Nddqj--y8K4IuBXOBLBrjqRDNIno2flg_4Wc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/models/<name>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "models",
+                "<name>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Model Versions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczNjY4ODM3fQ.a2txNI1Nddqj--y8K4IuBXOBLBrjqRDNIno2flg_4Wc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/models/<name>/versions",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "models",
+                "<name>",
+                "versions"
+              ],
+              "query": [
+                {
+                  "key": "tags",
+                  "value": "<tag:value, tag>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "params",
+                  "value": "<param:value, param>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "metrics",
+                  "value": "<metric:value, metric>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "aliases",
+                  "value": "<alias, alias>",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "sort",
+                  "value": "<sort_field asc|desc>",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Model Version",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczNjY4ODM3fQ.a2txNI1Nddqj--y8K4IuBXOBLBrjqRDNIno2flg_4Wc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/models/<name>/versions/<version>",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "models",
+                "<name>",
+                "versions",
+                "<version>"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download Model Version",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczNjY4ODM3fQ.a2txNI1Nddqj--y8K4IuBXOBLBrjqRDNIno2flg_4Wc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/models/<name>/versions/<version>/download",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "models",
+                "<name>",
+                "versions",
+                "<version>",
+                "download"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Predict Model Version",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleHBlcmltZW50YWkuY29tIiwiZXhwIjoxNzczNjY4ODM3fQ.a2txNI1Nddqj--y8K4IuBXOBLBrjqRDNIno2flg_4Wc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"dataframe_records\": [\n        {\n            \"<feature_1>\": \"<feature_1_value>\",\n            \"<feature_2>\": \"<feature_2_value>\"\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/models/<name>/versions/<version>/predict",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "models",
+                "<name>",
+                "versions",
+                "<version>",
+                "predict"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": ""
+    }
+  ]
+}

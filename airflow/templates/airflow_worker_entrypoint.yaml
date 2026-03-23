@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.airflowWorker.fullnameOverride }}-entrypoint
+data:
+  entrypoint.sh: |
+    #!/bin/sh
+    set -e
+
+    # INSTALL PIP REQUIREMENTS
+    {{- if .Values.airflowWorker.requirements }}
+    pip install{{- range .Values.airflowWorker.requirements }} {{ . }}{{- end }}
+    {{- end }}
+
+    # LOAD DATABASE
+    airflow db migrate
+
+    # START THE AIRFLOW WORKER
+    airflow celery worker

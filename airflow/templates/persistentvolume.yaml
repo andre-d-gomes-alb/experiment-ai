@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: airflow-logs-pv
+  labels:
+    volume: airflow-logs
+spec:
+  capacity:
+    storage: {{ .Values.airflow.persistence.logs.size }}
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  hostPath:
+    path: {{ .Values.airflow.persistence.logs.path }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: airflow-dags-pv
+  labels:
+    volume: airflow-dags
+spec:
+  capacity:
+    storage: {{ .Values.airflow.persistence.dags.size }}
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  hostPath:
+    path: {{ .Values.airflow.persistence.dags.path }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: airflow-plugins-pv
+  labels:
+    volume: airflow-plugins
+spec:
+  capacity:
+    storage: {{ .Values.airflow.persistence.plugins.size }}
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  hostPath:
+    path: {{ .Values.airflow.persistence.plugins.path }}

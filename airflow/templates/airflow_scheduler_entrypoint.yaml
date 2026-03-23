@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.airflowScheduler.fullnameOverride }}-entrypoint
+data:
+  entrypoint.sh: |
+    #!/bin/sh
+    set -e
+
+    # INSTALL PIP REQUIREMENTS
+    {{- if .Values.airflowScheduler.requirements }}
+    pip install{{- range .Values.airflowScheduler.requirements }} {{ . }}{{- end }}
+    {{- end }}
+
+    # LOAD DATABASE
+    airflow db migrate
+
+    # START THE AIRFLOW DAG PROCESSOR
+    airflow dag-processor &
+
+    # START THE AIRFLOW SCHEDULER
+    airflow scheduler

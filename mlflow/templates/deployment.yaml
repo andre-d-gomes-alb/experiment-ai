@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.fullnameOverride }}
+  labels:
+    app: {{ .Values.fullnameOverride }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.fullnameOverride }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.fullnameOverride }}
+    spec:
+      containers:
+        - name: mlflow
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: TZ
+              value: {{ .Values.env.TZ }}
+            - name: MLFLOW_TRACKING_URI
+              value: {{ .Values.env.trackingUri }}
+            - name: MLFLOW_ARTIFACT_URI
+              value: {{ .Values.env.artifactUri }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.minioUserKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.minioPasswordKey }}
+            - name: MLFLOW_S3_ENDPOINT_URL
+              value: {{ .Values.env.s3EndpointUrl }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.postgresUserKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.postgresPasswordKey }}
+            - name: MLFLOW_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.mlflowDbKey }}
+            - name: MLFLOW_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.mlflowUserKey }}
+            - name: MLFLOW_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.secretName }}
+                  key: {{ .Values.secrets.mlflowPasswordKey }}
+            - name: MLFLOW_BACKEND_STORE_URI
+              value: {{ .Values.env.backendStoreUri }}
+            - name: MLFLOW_FLASK_SERVER_SECRET_KEY
+              value: "0b2766ac5adc733be755033f09b4effe8e452aa0a31a09e3308621dec8c7f828"
+            - name: MLFLOW_AUTH_CONFIG_PATH
+              value: /mlflow/auth_config.ini
+            - name: MLFLOW_SERVER_ALLOWED_HOSTS
+              value: "*"
+          command:
+            - /scripts/entrypoint.sh
+          volumeMounts:
+            - name: mlflow-data
+              mountPath: /mlflow
+            - name: entrypoint
+              mountPath: /scripts
+              readOnly: true
+      volumes:
+        - name: mlflow-data
+          persistentVolumeClaim:
+            claimName: {{ .Values.fullnameOverride }}-pvc
+        - name: entrypoint
+          configMap:
+            name: {{ include "mlflow.fullname" . }}-entrypoint
+            defaultMode: 0755

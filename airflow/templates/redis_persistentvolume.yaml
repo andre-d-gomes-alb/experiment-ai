@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ printf "%s-redis-pv" .Values.fullnameOverride }}
+  labels:
+    volume: {{ printf "%s-redis" .Values.fullnameOverride }}
+spec:
+  capacity:
+    storage: {{ .Values.redis.master.persistence.size }}
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  hostPath:
+    path: {{ .Values.redis.master.persistence.hostPath }}
+    type: DirectoryOrCreate

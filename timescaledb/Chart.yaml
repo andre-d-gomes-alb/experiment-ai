@@ -1,0 +1,5 @@
+apiVersion: v2
+name: timescaledb
+description: A Helm chart for deploying TimescaleDB with PostgreSQL 17
+version: 0.1.0
+appVersion: "2.20.2"

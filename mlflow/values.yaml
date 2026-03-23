@@ -1,0 +1,111 @@
+fullnameOverride: mlflow
+
+replicaCount: 1
+
+image:
+  repository: andre8gomes/mlflow
+  tag: "3.10.0"
+  pullPolicy: IfNotPresent
+
+secrets:
+  secretName: experimentai-secrets
+  postgresUserKey: POSTGRES_USER
+  postgresPasswordKey: POSTGRES_PASSWORD
+  mlflowDbKey: MLFLOW_DB
+  mlflowUserKey: MLFLOW_USER
+  mlflowPasswordKey: MLFLOW_PASSWORD
+  minioUserKey: root-user
+  minioPasswordKey: root-password
+
+env:
+  TZ: Europe/Lisbon
+  trackingUri: http://mlflow-service:5000
+  artifactUri: s3://mlflow-artifacts/
+  s3EndpointUrl: http://mlflow-minio:9000
+  backendStoreUri: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@timescaledb-service:5432/mlflow_auth
+
+service:
+  type: NodePort
+  port: 5000
+  nodePort: 30002
+
+persistence:
+  hostPath: /mnt/data/mlflow
+  size: 5Gi
+
+global:
+  security:
+    allowInsecureImages: true
+
+minio:
+  image:
+    registry: public.ecr.aws/bitnami
+    repository: minio
+    tag: 2025.10.15-debian-12-r1
+    pullPolicy: IfNotPresent
+  auth:
+    existingSecret: experimentai-secrets
+    rootUserKey: root-user
+    rootPasswordKey: root-password
+  defaultBuckets: mlflow-artifacts
+  persistence:
+    existingClaim: mlflow-minio-pvc
+    hostPath: /mnt/data/minio
+    size: 5Gi
+  service:
+    type: NodePort
+    nodePorts:
+      api: 30001
+  console:
+    image:
+      registry: public.ecr.aws/bitnami
+      repository: minio-object-browser
+      tag: 2.0.4-debian-12-r4
+      pullPolicy: IfNotPresent
+    service:
+      type: NodePort
+      nodePorts:
+        http: 30011
+  initContainers:
+    - name: volume-permissions
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - "chown -R 1001:1001 /mnt/data/minio"
+      volumeMounts:
+        - name: data
+          mountPath: /mnt/data/minio
+      securityContext:
+        runAsUser: 0
+
+####################
+
+autoscaling:
+  mlflow:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  minio:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+serviceAccount:
+  create: false

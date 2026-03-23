@@ -1,0 +1,28 @@
+{{- if .Values.autoscaling.minio.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ printf "%s-minio" .Values.fullnameOverride }}
+  labels:
+    app: {{ printf "%s-minio" .Values.fullnameOverride }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ printf "%s-minio" .Values.fullnameOverride }}
+  minReplicas: {{ .Values.autoscaling.minio.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.minio.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.minio.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.minio.targetMemoryUtilizationPercentage }}
+{{- end }}

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "timescaledb.fullname" . }}-test-connection"
+  labels:
+    app.kubernetes.io/name: "{{ include "timescaledb.name" . }}"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  containers:
+    - name: test
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      command: ['pg_isready', '-h', 'timescaledb-service', '-p', '5432', '-U', 'POSTGRES_USER']
+      env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.name }}
+              key: {{ .Values.secrets.passwordKey }}
+  restartPolicy: Never

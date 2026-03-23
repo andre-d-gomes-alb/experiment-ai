@@ -1,0 +1,26 @@
+{{- if .Values.autoscaling.airflowWeb.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Values.airflowWeb.fullnameOverride }}-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Values.airflowWeb.fullnameOverride }}
+  minReplicas: {{ .Values.autoscaling.airflowWeb.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.airflowWeb.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.airflowWeb.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.airflowWeb.targetMemoryUtilizationPercentage }}
+{{- end }}

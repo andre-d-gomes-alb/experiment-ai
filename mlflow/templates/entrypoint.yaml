@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mlflow.fullname" . }}-entrypoint
+data:
+  entrypoint.sh: |
+    #!/bin/sh
+    set -e
+
+    # INSTALL POSTGRESQL DRIVER FOR PYTHON
+    pip install mlflow[auth] psycopg2-binary boto3
+
+    # DOWNLOAD THE MINIO CLIENT (mc) AND POSTGRES CLIENT (psql)
+    apt-get update && \
+    apt-get install -y curl postgresql-client
+    curl -sSL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
+    chmod +x /usr/local/bin/mc
+
+    # # CREATE THE MINIO BUCKET FOR MLFLOW, IF IT DOESN'T ALREADY EXIST
+    # mc alias set local {{ .Values.env.s3EndpointUrl }} $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
+    # mc ls local/mlflow-artifacts || mc mb local/mlflow-artifacts
+
+    # CREATE THE MLFLOW DATABASE, IF IT DOESN'T EXIST
+    export PGPASSWORD=$POSTGRES_PASSWORD
+    psql -h timescaledb-service -U $POSTGRES_USER -d postgres -tc "SELECT 1 FROM pg_database WHERE datname = '$MLFLOW_DB'" | grep -q 1 || \
+      psql -h timescaledb-service -U $POSTGRES_USER -d postgres -c "CREATE DATABASE $MLFLOW_DB"
+    
+    # CREATE THE MLFLOW AUTH DATABASE, IF IT DOESN'T EXIST
+    psql -h timescaledb-service -U $POSTGRES_USER -d postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'mlflow_auth'" | grep -q 1 || \
+      psql -h timescaledb-service -U $POSTGRES_USER -d postgres -c "CREATE DATABASE mlflow_auth"
+
+    # CREATE AUTH CONFIG FILE IF NOT EXISTS
+    if [ ! -f /mlflow/auth_config.ini ]; then
+      echo "[mlflow]" > /mlflow/auth_config.ini
+      echo "default_permission = READ" >> /mlflow/auth_config.ini
+      echo "database_uri = postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@timescaledb-service:5432/mlflow_auth" >> /mlflow/auth_config.ini
+      echo "authorization_function = mlflow.server.auth:authenticate_request_basic_auth" >> /mlflow/auth_config.ini
+      echo "admin_username = ${MLFLOW_USER:-admin}" >> /mlflow/auth_config.ini
+      echo "admin_password = ${MLFLOW_PASSWORD:-password}" >> /mlflow/auth_config.ini
+      echo "[INFO] Created /mlflow/auth_config.ini"
+    else
+      echo "[INFO] /mlflow/auth_config.ini already exists"
+    fi
+
+    # START THE MLFLOW TRACKING SERVER
+    mlflow server \
+      --app-name basic-auth \
+      --backend-store-uri postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@timescaledb-service:5432/$MLFLOW_DB \
+      --default-artifact-root s3://mlflow-artifacts/ \
+      --host 0.0.0.0 \
+      --port {{ .Values.service.port }}

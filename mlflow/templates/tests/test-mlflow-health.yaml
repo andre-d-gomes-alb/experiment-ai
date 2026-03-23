@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "mlflow.fullname" . }}-test-health"
+  labels:
+    app.kubernetes.io/name: "{{ include "mlflow.name" . }}"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:latest
+      command: ["sh", "-c"]
+      args:
+        - curl -s -o /dev/null -w "%{http_code}" http://{{ include "mlflow.fullname" . }}-service:{{ .Values.service.port }}/health | grep 200
+  restartPolicy: Never

@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "experimentai-chart.fullname" . }}-health-test"
+  labels:
+    app.kubernetes.io/name: "{{ .Values.fullnameOverride }}"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  containers:
+    - name: health-test
+      image: alpine:latest
+      command: ["sh", "-c"]
+      args:
+        - |
+          apk add --no-cache curl jq && \
+          echo "Testing API health endpoint..." && \
+          curl -s \
+            -H "X-Internal-Health-Token: ${INTERNAL_HEALTH_TOKEN}" \
+            http://{{ .Values.fullnameOverride }}-service:{{ .Values.service.port }}/api/v1/monitor/health \
+            > out.json && \
+          cat out.json && \
+          jq -e '
+            .app == "healthy"
+            
+            and .airflow.metadatabase.status == "healthy"
+            and .airflow.scheduler.status == "healthy"
+            and .airflow.triggerer.status == "healthy"
+            and .airflow.dag_processor.status == "healthy"
+            
+            and .mlflow == "healthy"
+          ' out.json
+      env:
+        - name: INTERNAL_HEALTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.secretName }}
+              key: {{ .Values.secrets.internalHealthTokenKey }}
+  restartPolicy: Never

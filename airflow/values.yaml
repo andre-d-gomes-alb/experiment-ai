@@ -1,0 +1,147 @@
+# Airflow
+fullnameOverride: airflow
+
+airflow:
+  image:
+    repository: andre8gomes/airflow
+    tag: "3.0.6"
+    pullPolicy: IfNotPresent
+
+  env:
+    timezone: Europe/Lisbon
+    mlflowS3EndpointUrl: http://mlflow-minio:9000
+    mlflowTrackingUri: http://mlflow-service:5000
+
+  persistence:
+    logs:
+      claimName: airflow-logs-pvc
+      path: /mnt/data/airflow/logs
+      size: 5Gi
+    dags:
+      claimName: airflow-dags-pvc
+      path: /mnt/data/airflow/dags
+      size: 1Gi
+    plugins:
+      claimName: airflow-plugins-pvc
+      path: /mnt/data/airflow/plugins
+      size: 1Gi
+
+secrets:
+  secretName: experimentai-secrets
+  postgresUserKey: POSTGRES_USER
+  postgresPasswordKey: POSTGRES_PASSWORD
+  airflowDbKey: AIRFLOW_DB
+  airflowRootUserKey: AIRFLOW_ROOT_USER
+  airflowRootPasswordKey: AIRFLOW_ROOT_PASSWORD
+  airflowRootEmailKey: AIRFLOW_ROOT_EMAIL
+  mlflowUserKey: MLFLOW_USER
+  mlflowPasswordKey: MLFLOW_PASSWORD
+  minioUserKey: root-user
+  minioPasswordKey: root-password
+  redisPasswordKey: REDIS_PASSWORD
+
+airflowWeb:
+  fullnameOverride: airflow-web
+  replicaCount: 1
+  service:
+    type: NodePort
+    port: 8080
+    nodePort: 30004
+
+airflowScheduler:
+  fullnameOverride: airflow-scheduler
+  replicaCount: 1
+
+  requirements:
+    - mlflow==3.10.0
+    - xgboost
+    - hyperopt
+    - apache-airflow-providers-fab
+
+airflowWorker:
+  fullnameOverride: airflow-worker
+  replicaCount: 1
+
+  requirements:
+    - mlflow==3.10.0
+    - xgboost
+    - hyperopt
+
+airflowTriggerer:
+  fullnameOverride: airflow-triggerer
+  replicaCount: 1
+
+# Postgres
+postgres:
+  serviceName: timescaledb-service
+
+# Redis
+redis:
+  serviceName: airflow-redis-master
+  architecture: standalone
+
+  auth:
+    enabled: true
+    existingSecret: experimentai-secrets
+    existingSecretPasswordKey: REDIS_PASSWORD
+
+  master:
+    service:
+      type: NodePort
+      ports:
+        redis: 6379
+      nodePorts:
+        redis: "30003"
+    
+    persistence:
+      enabled: true
+      existingClaim: airflow-redis-pvc
+      hostPath: /mnt/data/redis
+      size: 1Gi
+    
+    initContainers:
+      - name: volume-permissions
+        image: busybox:1.36
+        command:
+          - sh
+          - -c
+          - "chown -R 1001:1001 /data"
+        volumeMounts:
+          - name: redis-data
+            mountPath: /data
+        securityContext:
+          runAsUser: 0
+  
+  replica:
+    replicaCount: 0
+
+####################
+
+autoscaling:
+  airflowWeb:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  airflowWorker:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage: 75
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+serviceAccount:
+  create: false

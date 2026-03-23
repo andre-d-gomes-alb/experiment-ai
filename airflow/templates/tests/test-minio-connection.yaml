@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Values.fullnameOverride }}-test-minio-connection"
+  labels:
+    app.kubernetes.io/name: "{{ .Values.fullnameOverride }}"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  containers:
+    - name: minio-client
+      image: minio/mc
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          mc alias set local {{ .Values.airflow.env.mlflowS3EndpointUrl }} "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" && \
+          mc ls local/mlflow-artifacts
+      env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.secretName }}
+              key: {{ .Values.secrets.minioUserKey }}
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secrets.secretName }}
+              key: {{ .Values.secrets.minioPasswordKey }}
+  restartPolicy: Never

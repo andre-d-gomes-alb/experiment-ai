@@ -1,0 +1,10 @@
+apiVersion: v2
+name: airflow
+description: A Helm chart for deploying Airflow with Redis
+version: 0.1.0
+appVersion: "3.0.6"
+
+dependencies:
+  - name: redis
+    version: "23.2.12"
+    repository: "https://charts.bitnami.com/bitnami"

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Values.fullnameOverride }}-test-airflow-health"
+  labels:
+    app.kubernetes.io/name: "{{ .Values.fullnameOverride }}"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  containers:
+    - name: curl
+      image: alpine:latest
+      command: ["sh", "-c"]
+      args:
+        - |
+          apk add --no-cache curl jq && \
+          curl -s http://{{ .Values.airflowWeb.fullnameOverride }}-service:{{ .Values.airflowWeb.service.port }}/api/v2/monitor/health > out.json && cat out.json && \
+          jq -e '
+            (.metadatabase.status == "healthy") and
+            (.scheduler.status == "healthy") and
+            (.triggerer.status == "healthy") and
+            (.dag_processor.status == "healthy")
+          ' out.json
+  restartPolicy: Never

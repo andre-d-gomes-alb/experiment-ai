@@ -1,0 +1,122 @@
+# 📦 MODEL: {{ m_name }} v{{ m_version }}
+
+## 📝 Model Info:
+- **Description:** {{ m_description or 'N/A' }}
+- **Tags:** {{ m_tags or 'N/A' }}
+- **Latest version:** {{ m_latest_version or 'N/A' }}
+- **Experiment:** {{ m_experiment_name or 'N/A' }}
+- **Registered at:** {{ m_created_at or 'N/A' }}
+- **Last update:** {{ m_updated_at or 'N/A' }}
+
+## 📝 Model Version Info:
+- **Description:** {{ v_description or 'N/A' }}
+- **Tags:** {{ v_tags or 'N/A' }}
+- **Params:** {{ v_params or 'N/A' }}
+- **Metrics:** {{ v_metrics or 'N/A' }}
+- **Aliases:** {{ v_aliases or 'N/A' }}
+- **Flavors:** {{ v_flavors or 'N/A' }}
+- **Metadata:** {{ v_metadata or 'N/A' }}
+- **Registered at:** {{ v_created_at or 'N/A' }}
+- **Last update:** {{ v_updated_at or 'N/A' }}
+
+---
+
+## 🚀 How to Use in Python:
+```python
+#---------------------------------------------------------#
+# 1. Installation & Imports                               #
+#---------------------------------------------------------#
+# Install the necessary python libraries
+# Note: You may also need to install the library for your specific flavor{{ ': ' + v_flavors|reject('equalto', 'python_function')|join(', ') if v_flavors else ''}}
+#pip install mlflow joblib pandas
+
+# Import libraries
+import pandas as pd
+import os
+import sys
+
+#---------------------------------------------------------#
+# 2. Configuration & Loading                              #
+#---------------------------------------------------------#
+# Ensure the model is in the same directory as this script (or change the 'model_uri' accordingly)
+model_uri = "./"
+
+# Set to True to use MLflow, or False to load the binary directly (lighter)
+USE_MLFLOW = True
+
+if USE_MLFLOW:
+    try:
+        import mlflow
+
+        {%- if 'python_function' in v_flavors -%}
+            {%- set loader = 'pyfunc' -%}
+        {%- else -%}
+            {%- set loader = v_flavors[0] if v_flavors else 'pyfunc' -%}
+        {%- endif %}
+
+        # Loading the model using the '{{ loader }}' flavor
+        # Available flavors interface for this model: {{ v_flavors|join(', ')|replace('python_function', 'pyfunc') if v_flavors else 'No available flavors'}}
+        model = mlflow.{{ loader }}.load_model(model_uri)
+
+        print("✅ Model loaded successfully using MLflow ({{ loader }}).")
+    except Exception as e:
+        print(f"❌ Error loading the model with MLflow ({{ loader }}): {e}")
+        sys.exit(1)
+else:
+    try:
+        import joblib
+
+        # Search for model file .pkl (add this info manually for improved efficiency)
+        binary_path = next((os.path.join(r, f) for r, d, fs in os.walk(model_uri) for f in fs if f.endswith(".pkl")), None)
+        if not binary_path: 
+            raise FileNotFoundError("No .pkl found.")
+        
+        model = joblib.load(binary_path)
+
+        print(f"✅ Model loaded successfully, using joblib, from: {binary_path}")
+    except Exception as e:
+        print(f"❌ Error loading the model with joblib: {e}")
+        sys.exit(1)
+
+#---------------------------------------------------------#
+# 3. Input Data Preparation                               #
+#---------------------------------------------------------#
+# The model expects the following columns: {{ input_columns|join(', ') if input_columns else 'No schema defined' }}
+
+# Sample data structure (adjust values as needed)
+data_example = {{ input_example|tojson if input_example else '{}' }}
+
+try:
+    if data_example:
+        input_data = pd.DataFrame(pd.read_json(model_uri + data_example["artifact_path"], orient='split'))
+    else:
+        input_data = pd.DataFrame(data_example)
+except Exception as e:
+    print(f"❌ Error reading input example: {e}")
+    sys.exit(1)
+
+#---------------------------------------------------------#
+# 4. Running Predictions                                  #
+#---------------------------------------------------------#
+# Note: '.predict()' is the standard method for most MLflow flavors, you might need to check specific methods
+
+try:
+    predictions = model.predict(input_data)
+except Exception as e:
+    print(f"❌ Error during prediction: {e}")
+    sys.exit(1)
+    
+#---------------------------------------------------------#
+# 5. Displaying Results                                   #
+#---------------------------------------------------------#
+# Expected output columns/format: {{ output_columns|join(', ') if output_columns else 'No output schema defined' }}
+
+try:
+    print("\n📊 Prediction Results:")
+    print(predictions)
+except Exception as e:
+    print(f"❌ Error during results: {e}")
+    sys.exit(1)
+
+```
+{{ '\n' }}

@@ -1,0 +1,68 @@
+fullnameOverride: experimentai
+
+replicaCount: 1
+
+image:
+  repository: andre8gomes/experiment-ai
+  pullPolicy: IfNotPresent
+
+containerPort: 8000
+
+secrets:
+  secretName: experimentai-secrets
+  jwtSecretKey: JWT_SECRET_KEY
+  adminEmailKey: ADMIN_EMAIL
+  adminPasswordKey: ADMIN_PASSWORD
+  internalHealthTokenKey: INTERNAL_HEALTH_TOKEN
+  postgresExperimentaiDbKey: EXPERIMENTAI_DB
+  postgresUserKey: POSTGRES_USER
+  postgresPasswordKey: POSTGRES_PASSWORD
+  mlflowUsernameKey: MLFLOW_USER
+  mlflowPasswordKey: MLFLOW_PASSWORD
+  mlflowAwsAccessKey: AWS_ACCESS_KEY_ID
+  mlflowAwsSecretKey: AWS_SECRET_ACCESS_KEY
+  airflowUsernameKey: AIRFLOW_ROOT_USER
+  airflowPasswordKey: AIRFLOW_ROOT_PASSWORD
+  airflowDagsFolderKey: AIRFLOW_DAGS_FOLDER
+
+env:
+  postgresHost: "timescaledb-service"
+  postgresPort: "5432"
+  airflowApiBaseURL: "http://airflow-web-service:8080"
+  mlflowTrackingUri: "http://mlflow-service:5000"
+  mlflowS3EndpointUrl: "http://mlflow-minio:9000"
+
+volume:
+  hostPath_logs: /mnt/data/experimentai/logs
+  hostPath_airflow_dags: /mnt/data/airflow/dags
+
+service:
+  port: 80
+  type: NodePort
+  nodePort: 30005
+
+
+####################
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+ingress:
+  enabled: false
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: agent.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: false
+  tlsSecret: ""
+
+serviceAccount:
+  create: false

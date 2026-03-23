@@ -1,0 +1,99 @@
+from airflow import DAG
+from airflow.decorators import task
+from airflow.exceptions import AirflowSkipException
+from airflow.hooks.base import BaseHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.models import Variable
+from airflow.models.param import Param
+from airflow.sdk import Asset
+from airflow.utils.context import Context
+import mlflow
+import mlflow.sklearn
+from mlflow.models.signature import infer_signature
+from mlflow.tracking import MlflowClient
+from datetime import datetime, timedelta
+import requests
+import logging
+
+{{ '' }}
+
+{%- if default_args is not none %}
+default_args={
+    {%- if default_args.owner is not none %}
+    "owner": {{ default_args.owner }},
+    {%- endif %}
+    {%- if default_args.retries is not none %}
+    "retries": {{ default_args.retries }},
+    {%- endif %}
+    {%- if default_args.retry_delay_seconds is not none %}
+    "retry_delay": timedelta(seconds={{ default_args.retry_delay_seconds }}),
+    {%- endif %}
+}
+{%- endif %}
+
+{%- if schedule is not none and schedule.type == "assets" %}
+{{ '' }}
+# Schedule Assets Declaration
+{%- for asset in schedule.value %}
+{{ asset.name }} = Asset(uri="{{ asset.uri }}", name="{{ asset.name }}")
+{%- endfor %}
+{%- endif %}
+
+with DAG(
+    dag_id="{{ dag_id }}",
+    dag_display_name="{{ name }}",
+    {%- if description is not none %}
+    description={{ description | tojson }},
+    {%- endif %}
+    {%- if schedule is not none %}
+        {%- if schedule.type == "interval_seconds" %}
+    schedule=timedelta(seconds={{ schedule.value }}),
+        {%- elif schedule.type == "assets" %}
+    schedule=[{%- for a in schedule.value %}{{ a.name }}{%- if not loop.last %}, {% endif %}{%- endfor %}],
+        {%- else %}
+    schedule="{{ schedule.value }}",
+        {%- endif %}
+    {%- endif %}
+    {%- if start_date is not none %}
+    start_date=datetime({{ start_date.year }}, {{ start_date.month }}, {{ start_date.day }}, {{ start_date.hour }}, {{ start_date.minute }}, {{ start_date.second }}),
+    {%- endif %}
+    {%- if end_date is not none %}
+    end_date=datetime({{ end_date.year }}, {{ end_date.month }}, {{ end_date.day }}, {{ end_date.hour }}, {{ end_date.minute }}, {{ end_date.second }}),
+    {%- endif %}
+    {%- if catchup is not none %}
+    catchup={{ catchup }},
+    {%- endif %}
+    {%- if max_active_runs is not none %}
+    max_active_runs={{ max_active_runs }},
+    {%- endif %}
+    {%- if dagrun_timeout_seconds is not none %}
+    dagrun_timeout=timedelta(seconds={{ dagrun_timeout_seconds }}),
+    {%- endif %}
+    {%- if tags is not none %}
+    tags={{ tags }},
+    {%- endif %}
+    {%- if params is not none %}
+    params={
+        {%- for k, p in params.items() %}
+        "{{ k }}": Param(
+            {{ p.value | tojson }},
+            type="{{ p.type }}"{% if p.description %},
+            description={{ p.description | tojson }}{% endif %}
+        ){%- if not loop.last %}, {% endif %}
+        {%- endfor %}
+    },
+    {%- endif %}
+    {%- if default_args is not none %}
+    default_args=default_args
+    {%- endif %}
+) as dag:
+
+    # Set MLFlow experiment
+    try:
+        mlflow.set_experiment(experiment_id="{{ mlflow_experiment_id }}")
+    except Exception:
+        pass
+
+{{ code | trim | indent(4, true) -}}
+
+{{ '\n' }}

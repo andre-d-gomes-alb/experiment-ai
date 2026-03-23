@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.pytest_cache/
+dist/
+build/
+secrets.yaml
+
+ai-assistant/
+experiments/
+k8s_manifest/
+weather-app/
+images_backup/
