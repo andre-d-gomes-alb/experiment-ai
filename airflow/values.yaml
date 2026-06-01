@@ -53,6 +53,7 @@ airflowScheduler:
   replicaCount: 1
 
   requirements:
+    - tensorflow
     - mlflow==3.10.0
     - xgboost
     - hyperopt
@@ -63,6 +64,7 @@ airflowWorker:
   replicaCount: 1
 
   requirements:
+    - tensorflow
     - mlflow==3.10.0
     - xgboost
     - hyperopt
