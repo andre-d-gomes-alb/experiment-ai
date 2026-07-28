@@ -78,7 +78,20 @@ class MlflowExperimentLoggedModelService:
         except Exception as e:
             logger.error(f"[MLflow] Unexpected error updating model {model_id}: {e}")
             raise ExternalDependencyError()
-        
+
+    async def delete_logged_model(
+        self,
+        model_id: str,
+    ):
+        try:
+            self.client.delete_logged_model(model_id)
+        except MlflowException as e:
+            logger.error(f"[MLflow] Mlflow error deleting model {model_id}: {e}")
+            raise ExternalDependencyError()
+        except Exception as e:
+            logger.error(f"[MLflow] Unexpected error deleting model {model_id}: {e}")
+            raise ExternalDependencyError()
+
     async def download_logged_model_as_zip(
         self,
         artifact_uri: str,
