@@ -5,7 +5,7 @@ import re
 import json
 
 from app.infrastructure.db.models import User
-from app.infrastructure.db.repositories import ExperimentRepository
+from app.infrastructure.db.repositories import ExperimentRepository, ExperimentRegisteredModelRepository
 from app.infrastructure.mlflow import (
     MlflowExperimentRegisteredModelService, MlflowExperimentRunService, MlflowExperimentService,
 )
@@ -20,6 +20,7 @@ from app.core.resource_keys import experiment_resource_prefix
 
 ALLOWED_SORT_FIELDS = {
     "name",
+    "is_private",
     "created_at",
     "updated_at",
 }
@@ -37,11 +38,13 @@ class ExperimentRegisteredModelsService:
     def __init__(
         self,
         experiment_repo: ExperimentRepository,
+        experiment_registered_model_repo: ExperimentRegisteredModelRepository,
         mlflow_experiments: MlflowExperimentService,
         mlflow_runs: MlflowExperimentRunService,
         mlflow_models: MlflowExperimentRegisteredModelService
     ):
         self.experiment_repo = experiment_repo
+        self.experiment_registered_model_repo = experiment_registered_model_repo
         self.mlflow_ext = mlflow_experiments
         self.mlflow_runs = mlflow_runs
         self.mlflow_models = mlflow_models
@@ -52,6 +55,7 @@ class ExperimentRegisteredModelsService:
         current_user: User,
         tags: str | None = None,
         aliases: str | None = None,
+        is_private: bool | None = None,
         sort: str = "created_at desc",
     ) -> List[RegisteredModelRead]:
         experiment, access = await self.experiment_repo.get_with_access(
@@ -120,6 +124,10 @@ class ExperimentRegisteredModelsService:
                 if not match:
                     continue
 
+            if is_private is not None:
+                if m.is_private != is_private:
+                    continue
+
             filtered.append(m)
 
         def get_sort_value(obj: RegisteredModelRead):
@@ -160,6 +168,8 @@ class ExperimentRegisteredModelsService:
             model_info = await self.mlflow_models.get_registered_model_version_info(name, latest_v.version)
             latest_detail = self._map_version_detail(base_v, model_info)
 
+        privacy = await self.experiment_registered_model_repo.get_privacy(model_name=m.name)
+
         return RegisteredModelDetailRead(
             name=m.name,
             description=m.description,
@@ -169,6 +179,7 @@ class ExperimentRegisteredModelsService:
                 for k, v in (m.aliases or {}).items()
             ],
             latest_version=latest_detail,
+            is_private=privacy,
             created_at=datetime.fromtimestamp(m.creation_timestamp / 1000.0),
             updated_at=datetime.fromtimestamp(m.last_updated_timestamp / 1000.0),
         )
@@ -217,6 +228,14 @@ class ExperimentRegisteredModelsService:
         )
 
         latest = up_m.latest_versions[0] if up_m.latest_versions else None
+
+        if obj_in.is_private is not None:
+            await self.experiment_registered_model_repo.set_privacy(
+                model_name=name,
+                experiment_id=experiment.id,
+                user_id=current_user.id,
+                is_private=obj_in.is_private,
+            )
 
         return await self._map_model(up_m, latest)
 
@@ -658,12 +677,16 @@ class ExperimentRegisteredModelsService:
             RegisteredModelAliasesRead(alias=k, version=v)
             for k, v in (m.aliases or {}).items()
         ]
+
+        privacy = await self.experiment_registered_model_repo.get_privacy(model_name=m.name)
+
         return RegisteredModelRead(
             name=m.name,
             description=m.description,
             tags=m.tags or {},
             aliases=alias_list,
             latest_version=await self._map_version(last_v, m.aliases or {}) if last_v else None,
+            is_private=privacy,
             created_at=datetime.fromtimestamp(m.creation_timestamp / 1000.0),
             updated_at=datetime.fromtimestamp(m.last_updated_timestamp / 1000.0),
         )

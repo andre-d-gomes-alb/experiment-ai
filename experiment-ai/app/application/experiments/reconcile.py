@@ -24,30 +24,26 @@ async def reconcile_experiments(
     experiment_repo: ExperimentRepository,
 ) -> list[Experiment]:
     prefix = experiment_prefix()
-    exps = await experiment_repo.search_for_user(user_id=current_user.id, include_archived=True)
-    experiments_db = [exp for exp, _ in exps]
-    all_mlflow = await mlflow_experiments.list()
-    
-    mlflow_map = {str(m["id"]): m for m in all_mlflow}
 
-    db_mlflow_ids = {str(e.mlflow_experiment_id) for e in experiments_db if e.mlflow_experiment_id}
-    
-    for m in all_mlflow:
-        m_id = str(m["id"])
-        if m["name"].startswith(prefix) and m_id not in db_mlflow_ids:
-            await mlflow_experiments.delete(m_id)
-            if m_id in mlflow_map:
-                del mlflow_map[m_id]
+    exps = await experiment_repo.search_for_user(
+        user_id=current_user.id,
+        include_archived=True
+    )
+    experiments_db = [exp for exp, _ in exps]
+
+    all_mlflow = await mlflow_experiments.list()
+    mlflow_map = {str(m["id"]): m for m in all_mlflow}
 
     for exp_db in experiments_db:
         if exp_db.archived_at:
             continue
 
-        exp_mlflow = mlflow_map.get(str(exp_db.mlflow_experiment_id)) if exp_db.mlflow_experiment_id else None
-        
+        exp_mlflow = mlflow_map.get(str(exp_db.mlflow_experiment_id)) \
+            if exp_db.mlflow_experiment_id else None
+
         if not exp_mlflow:
             await experiment_repo.archive(exp_db.id)
-            exp_db.archived_at = datetime.now() 
+            exp_db.archived_at = datetime.now()
             continue
 
         tech_name = f"{prefix}{exp_db.id}"
@@ -56,7 +52,7 @@ async def reconcile_experiments(
             exp_mlflow.get("description") != exp_db.description or
             exp_mlflow.get("tags") != exp_db.tags
         )
-        
+
         if needs_sync:
             await mlflow_experiments.update(
                 experiment_id=exp_mlflow["id"],
@@ -75,19 +71,14 @@ async def reconcile_experiment(
     exp_db = await experiment_repo.get_by_id(experiment_id)
     if not exp_db:
         return None
-    
+
     if exp_db.archived_at:
-        if exp_db.mlflow_experiment_id:
-            try:
-                await mlflow_experiments.delete(str(exp_db.mlflow_experiment_id))
-            except Exception:
-                pass
         return exp_db
-    
+
     if not exp_db.mlflow_experiment_id:
         exp_db = await experiment_repo.archive(experiment_id)
         return exp_db
-        
+
     try:
         exp_mlflow = await mlflow_experiments.get(str(exp_db.mlflow_experiment_id))
         if exp_mlflow.get("lifecycle_stage") == "deleted":
@@ -98,11 +89,12 @@ async def reconcile_experiment(
     if not exp_mlflow:
         exp_db = await experiment_repo.archive(experiment_id)
         if exp_db:
-            exp_db.archived_at = datetime.now() 
+            exp_db.archived_at = datetime.now()
         return exp_db
-    
+
     prefix = experiment_prefix()
     tech_name = f"{prefix}{exp_db.id}"
+
     needs_sync = (
         exp_mlflow.get("name") != tech_name or
         exp_mlflow.get("description") != exp_db.description or
@@ -116,9 +108,8 @@ async def reconcile_experiment(
             description=exp_db.description,
             tags=exp_db.tags,
         )
-        
-    return exp_db
 
+    return exp_db
 
 # Reconciliation Functions for Experiment Variables
 

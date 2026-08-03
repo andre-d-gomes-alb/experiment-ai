@@ -8,10 +8,12 @@ import io
 import zipfile
 import time
 
-from app.infrastructure.db.repositories import ExperimentRepository
+from app.infrastructure.db.models import User
+from app.infrastructure.db.repositories import ExperimentRepository, ExperimentRegisteredModelRepository
 from app.infrastructure.mlflow import (
     MlflowExperimentRegisteredModelService, MlflowExperimentRunService, MlflowExperimentService,
 )
+from app.domain.experiments import can_view_experiment
 from app.api.v1.models import (
     ModelRead, ModelDetailRead, ModelAliasesRead, ModelVersionRead, ModelVersionDetailRead,
     ModelVersionInferenceRequest, ModelVersionInferenceResponse,
@@ -21,6 +23,7 @@ from app.api.v1.models import (
 ALLOWED_SORT_FIELDS = {
     "name",
     "experiment_name",
+    "is_private",
     "created_at",
     "updated_at",
 }
@@ -36,21 +39,25 @@ class ModelService:
     def __init__(
         self,
         experiment_repo: ExperimentRepository,
+        experiment_registered_model_repo: ExperimentRegisteredModelRepository,
         mlflow_experiments: MlflowExperimentService,
         mlflow_runs: MlflowExperimentRunService,
         mlflow_models: MlflowExperimentRegisteredModelService
     ):
         self.experiment_repo = experiment_repo
+        self.experiment_registered_model_repo = experiment_registered_model_repo
         self.mlflow_ext = mlflow_experiments
         self.mlflow_runs = mlflow_runs
         self.mlflow_models = mlflow_models
 
     async def list_models(
         self,
+        current_user: User,
         tags: str | None = None,
         aliases: str | None = None,
         experiment_name: str | None = None,
         only_experiment_models: bool = False,
+        is_private: bool | None = None,
         sort: str = "created_at desc",
     ) -> List[ModelRead]:
         try:
@@ -83,6 +90,11 @@ class ModelService:
 
             if latest and latest.run_id:
                 exp_name = await self._resolve_db_experiment_name(latest.run_id, exp_name_cache)
+
+            privacy = await self.experiment_registered_model_repo.get_privacy(model_name=m.name)
+            if privacy:
+                if not await self._can_user_access_model(exp_name, current_user):
+                    continue
 
             if only_experiment_models and not exp_name:
                 continue
@@ -123,6 +135,10 @@ class ModelService:
                 if not match:
                     continue
 
+            if is_private is not None:
+                if m.is_private != is_private:
+                    continue
+
             filtered.append(m)
 
         def get_sort_value(obj: ModelRead):
@@ -135,6 +151,7 @@ class ModelService:
     
     async def get_model(
         self,
+        current_user: User,
         name: str
     ) -> ModelDetailRead:
         m = await self.mlflow_models.get_registered_model(name)
@@ -149,6 +166,14 @@ class ModelService:
         exp_name = None
         if latest_v and latest_v.run_id:
             exp_name = await self._resolve_db_experiment_name(latest_v.run_id, {})
+
+        privacy = await self.experiment_registered_model_repo.get_privacy(model_name=m.name)
+        if privacy:
+            if not await self._can_user_access_model(exp_name, current_user):
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Model not found",
+                )
 
         latest_detail = None
         if latest_v:
@@ -166,6 +191,7 @@ class ModelService:
             ],
             latest_version=latest_detail,
             experiment_name=exp_name,
+            is_private=privacy,
             created_at=datetime.fromtimestamp(m.creation_timestamp / 1000.0),
             updated_at=datetime.fromtimestamp(m.last_updated_timestamp / 1000.0),
         )
@@ -175,6 +201,7 @@ class ModelService:
 
     async def list_model_versions(
         self,
+        current_user: User,
         name: str,
         tags: str | None = None,
         params: str | None = None,
@@ -188,6 +215,19 @@ class ModelService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Model not found",
             )
+
+        latest_v = model_obj.latest_versions[0] if model_obj.latest_versions else None
+        exp_name = None
+        if latest_v and latest_v.run_id:
+            exp_name = await self._resolve_db_experiment_name(latest_v.run_id, {})
+
+        privacy = await self.experiment_registered_model_repo.get_privacy(model_name=model_obj.name)
+        if privacy:
+            if not await self._can_user_access_model(exp_name, current_user):
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Model not found",
+                )
         
         try:
             sort_field, sort_order = sort.split()
@@ -288,6 +328,7 @@ class ModelService:
     
     async def get_model_version(
         self,
+        current_user: User,
         name: str,
         version: str,
     ) -> ModelVersionDetailRead:
@@ -304,6 +345,18 @@ class ModelService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Model version not found"
             )
+
+        exp_name = None
+        if m_version.run_id:
+            exp_name = await self._resolve_db_experiment_name(m_version.run_id, {})
+
+        privacy = await self.experiment_registered_model_repo.get_privacy(model_name=model_obj.name)
+        if privacy:
+            if not await self._can_user_access_model(exp_name, current_user):
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Model not found",
+                )
         
         base_read = await self._map_version(m_version)
         model_info = await self.mlflow_models.get_registered_model_version_info(name, m_version.version)
@@ -312,6 +365,7 @@ class ModelService:
     
     async def download_model_version_zip(
         self,
+        current_user: User,
         name: str,
         version: str,
     ):
@@ -328,6 +382,18 @@ class ModelService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Model version not found"
             )
+
+        exp_name = None
+        if m_version.run_id:
+            exp_name = await self._resolve_db_experiment_name(m_version.run_id, {})
+
+        privacy = await self.experiment_registered_model_repo.get_privacy(model_name=model_obj.name)
+        if privacy:
+            if not await self._can_user_access_model(exp_name, current_user):
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Model not found",
+                )
         
         zip_buffer = await self.mlflow_models.download_model_version_as_zip(m_version.source)
         if not zip_buffer:
@@ -349,7 +415,8 @@ class ModelService:
         return final_zip_buffer, filename
     
     async def model_version_make_prediction(
-        self, 
+        self,
+        current_user: User,
         name: str, 
         version: str, 
         data: ModelVersionInferenceRequest,
@@ -367,6 +434,18 @@ class ModelService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Model version not found"
             )
+
+        exp_name = None
+        if m_version.run_id:
+            exp_name = await self._resolve_db_experiment_name(m_version.run_id, {})
+
+        privacy = await self.experiment_registered_model_repo.get_privacy(model_name=model_obj.name)
+        if privacy:
+            if not await self._can_user_access_model(exp_name, current_user):
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Model not found",
+                )
         
         model_info = await self.mlflow_models.get_registered_model_version_info(name, m_version.version)
         flavors = [f for f in (model_info.flavors or {}).keys()]
@@ -437,6 +516,9 @@ class ModelService:
             ModelAliasesRead(alias=k, version=v)
             for k, v in (m.aliases or {}).items()
         ]
+
+        privacy = await self.experiment_registered_model_repo.get_privacy(model_name=m.name)
+        
         return ModelRead(
             name=m.name,
             description=m.description,
@@ -444,6 +526,7 @@ class ModelService:
             aliases=alias_list,
             latest_version=await self._map_version(last_v, m.aliases or {}) if last_v else None,
             experiment_name=exp_name,
+            is_private=privacy,
             created_at=datetime.fromtimestamp(m.creation_timestamp / 1000.0),
             updated_at=datetime.fromtimestamp(m.last_updated_timestamp / 1000.0),
         )
@@ -574,3 +657,19 @@ class ModelService:
         
         new_buffer.seek(0)
         return new_buffer
+
+    async def _can_user_access_model(self, experiment_name: str, current_user) -> bool:
+        if not experiment_name:
+            return False
+
+        exp_db = await self.experiment_repo.get_by_name(experiment_name)
+        if not exp_db:
+            return False
+
+        experiment, access = await self.experiment_repo.get_with_access(
+            exp_db.id,
+            current_user.id,
+            current_user.role
+        )
+
+        return can_view_experiment(access)

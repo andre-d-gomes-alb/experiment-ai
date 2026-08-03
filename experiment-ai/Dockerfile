@@ -32,10 +32,12 @@ COPY . /app
 FROM python:3.11-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH="/app"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
+    make \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user

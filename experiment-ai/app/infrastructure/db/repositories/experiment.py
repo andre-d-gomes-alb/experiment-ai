@@ -190,3 +190,17 @@ class ExperimentRepository:
         obj = await self.session.get(Experiment, experiment_id)
         if obj:
             await self.session.refresh(obj)
+
+    async def get_by_name(
+        self,
+        name: str,
+    ) -> Optional[Experiment]:
+        result = await self.session.execute(
+            select(Experiment)
+            .where(Experiment.name == name)
+            .options(
+                selectinload(Experiment.members).selectinload(ExperimentMember.user),
+                selectinload(Experiment.owner),
+            )
+        )
+        return result.scalar_one_or_none()

@@ -24,6 +24,7 @@ async def list_experiment_registered_models(
     service: ExperimentRegisteredModelsService = Depends(get_experiment_registered_models_service),
     tags: Optional[str] = None,
     aliases: Optional[str] = None,
+    is_private: Optional[bool] = None,
     sort: str = "created_at desc",
 ):
     return await service.list_registered_models(
@@ -31,6 +32,7 @@ async def list_experiment_registered_models(
         current_user=current_user,
         tags=tags,
         aliases=aliases,
+        is_private=is_private,
         sort=sort,
     )
 

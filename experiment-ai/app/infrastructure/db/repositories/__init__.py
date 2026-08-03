@@ -4,6 +4,7 @@ from .experiment_member import ExperimentMemberRepository
 from .experiment_variable import ExperimentVariableRepository
 from .experiment_connection import ExperimentConnectionRepository
 from .experiment_pipeline import ExperimentPipelineRepository
+from .experiment_registered_model import ExperimentRegisteredModelRepository
 
 __all__ = [
     "UserRepository",
@@ -12,4 +13,5 @@ __all__ = [
     "ExperimentVariableRepository",
     "ExperimentConnectionRepository",
     "ExperimentPipelineRepository",
+    "ExperimentRegisteredModelRepository",
 ]

@@ -34,6 +34,7 @@ class RegisteredModelRead(BaseModel):
     tags: Dict[str, str] = {}
     aliases: List[RegisteredModelAliasesRead] = []
     latest_version: Optional[RegisteredModelVersionRead]
+    is_private: bool
     created_at: datetime
     updated_at: datetime
 
@@ -43,6 +44,7 @@ class RegisteredModelDetailRead(BaseModel):
     tags: Dict[str, str] = {}
     aliases: List[RegisteredModelAliasesRead] = []
     latest_version: Optional[RegisteredModelVersionDetailRead]
+    is_private: bool
     created_at: datetime
     updated_at: datetime
 
@@ -50,6 +52,7 @@ class RegisteredModelUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     tags: Optional[Dict[str, str]] = None
+    is_private: Optional[bool] = None
 
 class RegisteredModelVersionUpdate(BaseModel):
     description: Optional[str] = None

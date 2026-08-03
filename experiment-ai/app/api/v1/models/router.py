@@ -24,24 +24,28 @@ async def list_models(
     aliases: Optional[str] = None,
     experiment_name: Optional[str] = None,
     only_experiment_models: bool = False,
+    is_private: Optional[bool] = None,
     sort: str = "created_at desc",
 ):
     return await service.list_models(
+        current_user=current_user,
         tags=tags,
         aliases=aliases,
         experiment_name=experiment_name,
         only_experiment_models=only_experiment_models,
+        is_private=is_private,
         sort=sort,
     )
 
 # Get Model
 @router.get("/{name}", response_model=ModelDetailRead)
 async def get_model(
-    name: str = Path(...),
     current_user: User = Depends(get_current_user),
+    name: str = Path(...),
     service: ModelService = Depends(get_models_service),
 ):
     return await service.get_model(
+        current_user=current_user,
         name=name
     )
 
@@ -51,8 +55,8 @@ async def get_model(
 # List Model Versions
 @router.get("/{name}/versions", response_model=List[ModelVersionRead])
 async def list_model_versions(
-    name: str = Path(...),
     current_user: User = Depends(get_current_user),
+    name: str = Path(...),
     service: ModelService = Depends(get_models_service),
     tags: Optional[str] = None,
     params: Optional[str] = None,
@@ -61,6 +65,7 @@ async def list_model_versions(
     sort: str = "version desc",
 ):
     return await service.list_model_versions(
+        current_user=current_user,
         name=name,
         tags=tags,
         params=params,
@@ -72,12 +77,13 @@ async def list_model_versions(
 # Get Model Version
 @router.get("/{name}/versions/{version}", response_model=ModelVersionDetailRead)
 async def get_model_version(
+    current_user: User = Depends(get_current_user),
     name: str = Path(...),
     version: str = Path(...),
-    current_user: User = Depends(get_current_user),
     service: ModelService = Depends(get_models_service),
 ):
     return await service.get_model_version(
+        current_user=current_user,
         name=name,
         version=version
     )
@@ -85,12 +91,13 @@ async def get_model_version(
 # Download Model Version
 @router.get("/{name}/versions/{version}/download")
 async def download_model_version(
+    current_user: User = Depends(get_current_user),
     name: str = Path(...),
     version: str = Path(...),
-    current_user: User = Depends(get_current_user),
     service: ModelService = Depends(get_models_service),
 ):
     zip_stream, filename = await service.download_model_version_zip(
+        current_user=current_user,
         name=name,
         version=version
     )
@@ -108,9 +115,9 @@ async def download_model_version(
 @router.post("/{name}/versions/{version}/predict", response_model=ModelVersionInferenceResponse)
 async def predict_model_version(
     request: ModelVersionInferenceRequest,
+    current_user: User = Depends(get_current_user),
     name: str = Path(...),
     version: str = Path(...),
-    current_user: User = Depends(get_current_user),
     service: ModelService = Depends(get_models_service),
 ):
     """
@@ -120,6 +127,7 @@ async def predict_model_version(
     """
 
     return await service.model_version_make_prediction(
+        current_user=current_user,
         name=name,
         version=version,
         data=request

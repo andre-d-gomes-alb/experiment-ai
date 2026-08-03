@@ -38,6 +38,7 @@ class ModelRead(BaseModel):
     aliases: List[ModelAliasesRead] = []
     latest_version: Optional[ModelVersionRead]
     experiment_name: str | None = None
+    is_private: bool
     created_at: datetime
     updated_at: datetime
 
@@ -48,5 +49,6 @@ class ModelDetailRead(BaseModel):
     aliases: List[ModelAliasesRead] = []
     latest_version: Optional[ModelVersionDetailRead]
     experiment_name: str | None = None
+    is_private: bool
     created_at: datetime
     updated_at: datetime

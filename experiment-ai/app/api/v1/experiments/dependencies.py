@@ -8,7 +8,7 @@ from app.application.experiments import (
     ExperimentRunsService, ExperimentLoggedModelsService, ExperimentRegisteredModelsService,
 )
 from app.infrastructure.db.repositories import (
-    ExperimentRepository, ExperimentMemberRepository, UserRepository,
+    ExperimentRepository, ExperimentMemberRepository, UserRepository, ExperimentRegisteredModelRepository,
     ExperimentVariableRepository, ExperimentConnectionRepository, ExperimentPipelineRepository,
 )
 from app.infrastructure.mlflow import (
@@ -95,6 +95,7 @@ def get_experiment_registered_models_service(
 ) -> ExperimentRegisteredModelsService:
     return ExperimentRegisteredModelsService(
         experiment_repo=ExperimentRepository(session),
+        experiment_registered_model_repo=ExperimentRegisteredModelRepository(session),
         mlflow_experiments=MlflowExperimentService(),
         mlflow_runs=MlflowExperimentRunService(),
         mlflow_models=MlflowExperimentRegisteredModelService(),
