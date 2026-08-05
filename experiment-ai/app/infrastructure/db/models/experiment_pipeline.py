@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Text, DateTime, ForeignKey, func, Enum
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import JSONB
 
 from app.infrastructure.db.base import Base
 from app.domain.experiments import ExperimentPipelineStatusEnum
@@ -16,6 +17,7 @@ class ExperimentPipeline(Base):
     id = Column(String(100), primary_key=True)
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
+    tags = Column(JSONB, nullable=True, default=list, server_default="[]")
     status = Column(
         Enum(ExperimentPipelineStatusEnum, name="experiment_pipeline_status_enum"),
         nullable=False,

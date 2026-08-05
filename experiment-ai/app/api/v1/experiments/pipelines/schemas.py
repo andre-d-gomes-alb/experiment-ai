@@ -70,6 +70,7 @@ class PipelineReadBase(BaseModel):
     id: str
     name: str
     description: Optional[str]
+    tags: Optional[List[str]]
     status: ExperimentPipelineStatusEnum
     paused_at: Optional[datetime]
     created_at: datetime

@@ -166,6 +166,7 @@ class ExperimentPipelinesService:
             id=data.id,
             name=data.name,
             description=data.description,
+            tags=data.tags,
             created_by_user_id=current_user.id,
             status=ExperimentPipelineStatusEnum.CREATING,
         )
@@ -175,6 +176,7 @@ class ExperimentPipelinesService:
             id=pipeline.id,
             name=pipeline.name,
             description=pipeline.description,
+            tags=pipeline.tags,
             status=pipeline.status,
             created_at=pipeline.created_at,
             updated_at=pipeline.updated_at,
@@ -279,6 +281,7 @@ class ExperimentPipelinesService:
                     id=db.id,
                     name=db.name,
                     description=db.description,
+                    tags=db.tags,
                     status=db.status,
                     created_at=db.created_at,
                     updated_at=db.updated_at,
@@ -362,6 +365,7 @@ class ExperimentPipelinesService:
             id=pipeline.id,
             name=pipeline.name,
             description=pipeline.description,
+            tags=pipeline.tags,
             status=pipeline.status,
             created_at=pipeline.created_at,
             updated_at=pipeline.updated_at,
@@ -423,6 +427,8 @@ class ExperimentPipelinesService:
             pipeline.name = data.name
         if data.description is not None:
             pipeline.description = data.description
+        if data.tags is not None:
+            pipeline.tags = data.tags
 
         prefix = experiment_resource_prefix(experiment_id)
         pipeline_ids = [prefix + d.id for d in pipelines_db]
@@ -470,7 +476,7 @@ class ExperimentPipelinesService:
                 "default_args": data.default_args,
                 "max_active_runs": data.max_active_runs,
                 "dagrun_timeout_seconds": data.dagrun_timeout_seconds,
-                "tags": data.tags,
+                "tags": pipeline.tags,
                 "params": params,
                 "code": code,
             },
@@ -483,6 +489,7 @@ class ExperimentPipelinesService:
             id=pipeline_up.id,
             name=pipeline_up.name,
             description=pipeline_up.description,
+            tags=pipeline_up.tags,
             status=pipeline_up.status,
             created_at=pipeline_up.created_at,
             updated_at=pipeline_up.updated_at,
