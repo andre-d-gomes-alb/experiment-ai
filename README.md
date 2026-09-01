@@ -586,9 +586,13 @@ Manage models from this experiment that have been promoted to the Model Registry
 
 ## Models Hub (`/api/v1/models`)
 
-Manage the model life cycle, including registration, versioning, and experimental inference. This module integrates directly with **MLflow** to provide a centralized model registry.
+Manage the model life cycle, including registration, versioning, and experimental inference. This module integrates directly with **MLflow** to provide a centralized model registry. Models can be **public** or **private**.
 
-> All authenticated users can access the Models Hub.  
+> ⚠️ All authenticated users can access the Models Hub, but:
+> - All users have access to **public** models
+> - Only experiment owners and members have access to **private** models
+>
+> 
 > ⚠️ Inference is provided as an **experimental** feature with ephemeral loading.
 
 - `GET /`
